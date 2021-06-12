@@ -70,17 +70,17 @@ func (s boardType) IsValid() bool {
 
 func (s *SudokuBoard) Solve() error {
 	t1 := time.Now()
-	newBoard, ok := solve(*s.board, 0, 0)
+	newBoard, ok := backtrackingSolve(*s.board, 0, 0)
 	t2 := time.Now()
 	if !ok {
-		return errors.New("failed to solve sudoku board")
+		return errors.New("failed to backtrackingSolve sudoku board")
 	}
 	s.log.Info(fmt.Sprintf("took[ms]: %d", t2.Sub(t1).Milliseconds()))
 	s.board = &newBoard
 	return nil
 }
 
-func solve(board boardType, i, j int) (boardType, bool) {
+func backtrackingSolve(board boardType, i, j int) (boardType, bool) {
 	for ; i < sudokuSize; i++ {
 		if j == sudokuSize {
 			j = 0
@@ -92,7 +92,7 @@ func solve(board boardType, i, j int) (boardType, bool) {
 					board[i][j] = sudokuValue(v)
 
 					if board.IsValid() {
-						if solvedBoard, ok := solve(board, i, j); ok {
+						if solvedBoard, ok := backtrackingSolve(board, i, j); ok {
 							return solvedBoard, true
 						}
 					}
